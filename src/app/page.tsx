@@ -1,7 +1,17 @@
+"use client";
+
+import { RubikCube } from "@/components";
+import { Canvas } from "@react-three/fiber";
+
 export default function Home() {
   return (
     <div>
-      <h1>Rubik Cube Simulator</h1>
+      <Canvas style={{ height: "100vh", width: "100vh", margin: "0 auto" }}>
+        <ambientLight intensity={1.2} />
+        <pointLight position={[10, 10, 10]} />
+
+        <RubikCube />
+      </Canvas>
     </div>
   );
 }
