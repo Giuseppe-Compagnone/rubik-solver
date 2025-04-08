@@ -16,6 +16,10 @@ const RubikCube = (props: RubikCubeProps) => {
     camera.lookAt(0, 0, 0);
   }, [camera]);
 
+  useEffect(() => {
+    console.log("gltf", gltf);
+  }, [gltf]);
+
   return (
     <>
       <primitive
