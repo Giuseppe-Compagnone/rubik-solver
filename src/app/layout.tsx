@@ -8,6 +8,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <title>Rubik Solver</title>
+      </head>
       <body>
         <ProviderWrapper>{children}</ProviderWrapper>
       </body>
