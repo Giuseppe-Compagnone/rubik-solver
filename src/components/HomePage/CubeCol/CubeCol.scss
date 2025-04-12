@@ -1,0 +1,30 @@
+// CubeCol
+@use "./components/components";
+
+.cube-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  max-width: 80vh;
+
+  .canvas {
+    height: 80vh !important;
+    width: 80vh !important;
+  }
+
+  .moves {
+    height: 20vh;
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 1rem;
+
+    .button {
+      width: 58px;
+    }
+  }
+}

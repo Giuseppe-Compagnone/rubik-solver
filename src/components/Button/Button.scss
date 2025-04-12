@@ -1,0 +1,19 @@
+// Button
+
+.button {
+  padding: 0.7rem 1.25rem;
+  height: fit-content;
+  cursor: pointer;
+  outline: none;
+  color: #fff;
+  background: rgb(30 30 30);
+  border: none;
+  border-radius: 0.3rem;
+  font-weight: bold;
+  font-size: 1.2rem;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    scale: 1.1;
+  }
+}

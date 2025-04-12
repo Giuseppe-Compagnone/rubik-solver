@@ -118,26 +118,18 @@ export class Cube {
           const pieceGroup = new THREE.Object3D();
 
           // External faces
-          if (
-            i === 0 ||
-            j === 0 ||
-            k === 0 ||
-            i === this.order - 1 ||
-            j === this.order - 1 ||
-            k === this.order - 1
-          ) {
-            if (i === this.order - 1) pieceGroup.add(faceR);
-            if (i === 0) pieceGroup.add(faceL);
-            if (j === this.order - 1) pieceGroup.add(faceU);
-            if (j === 0) pieceGroup.add(faceD);
-            if (k === this.order - 1) pieceGroup.add(faceF);
-            if (k === 0) pieceGroup.add(faceB);
 
-            pieceGroup.add(box);
-            pieceGroup.name = `${i}${j}${k}`;
-            this.scene.add(pieceGroup);
-            this.blocks[i][j][k].piece = pieceGroup;
-          }
+          if (i === this.order - 1) pieceGroup.add(faceR);
+          if (i === 0) pieceGroup.add(faceL);
+          if (j === this.order - 1) pieceGroup.add(faceU);
+          if (j === 0) pieceGroup.add(faceD);
+          if (k === this.order - 1) pieceGroup.add(faceF);
+          if (k === 0) pieceGroup.add(faceB);
+
+          pieceGroup.add(box);
+          pieceGroup.name = `${i}${j}${k}`;
+          this.scene.add(pieceGroup);
+          this.blocks[i][j][k].piece = pieceGroup;
         }
       }
     }

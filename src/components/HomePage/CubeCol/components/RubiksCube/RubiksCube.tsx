@@ -1,30 +1,26 @@
+"use client";
+
 import { OrbitControls } from "@react-three/drei";
 import { RubiksCubeProps } from "./RubiksCube.types";
 import { useEffect, useRef, useState } from "react";
 import { Cube } from "@/models";
 import { useThree } from "@react-three/fiber";
 import * as THREE from "three";
+import { useRubikCubeService } from "@/services";
 
 const RubiksCube = (props: RubiksCubeProps) => {
-  //States
-  const [cube, setCube] = useState<Cube | null>(null);
-
   //Hooks
   const sceneRef = useRef<THREE.Scene>(null);
   const controlsRef = useRef(null);
   const { camera } = useThree();
+  const { cube } = useRubikCubeService();
 
   //Effects
   useEffect(() => {
     const timer = setInterval(() => {
       if (sceneRef.current) {
         const c = new Cube(sceneRef.current);
-        console.table(c.blocks);
-        c.rotate("R")();
-        setTimeout(() => {
-          c.rotate("L")();
-        }, 500);
-        setCube(c);
+        cube.current = c;
         clearInterval(timer);
       }
     }, 200);
@@ -33,7 +29,7 @@ const RubiksCube = (props: RubiksCubeProps) => {
   }, [sceneRef.current]);
 
   useEffect(() => {
-    camera.position.set(-3, 3, -3);
+    camera.position.set(-3, 3, 3);
     camera.lookAt(0, 0, 0);
   }, [camera]);
 
