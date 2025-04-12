@@ -1,1 +1,1 @@
-export * from "./RubikCube";
+export * from "./RubiksCube";

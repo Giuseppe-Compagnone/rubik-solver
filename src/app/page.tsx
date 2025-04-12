@@ -1,6 +1,6 @@
 "use client";
 
-import { RubikCube } from "@/components";
+import { RubiksCube } from "@/components";
 import { Canvas } from "@react-three/fiber";
 
 export default function Home() {
@@ -17,8 +17,7 @@ export default function Home() {
       >
         <ambientLight intensity={1.2} />
         <pointLight position={[10, 10, 10]} />
-
-        <RubikCube />
+        <RubiksCube />
       </Canvas>
     </div>
   );
