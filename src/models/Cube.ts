@@ -7,6 +7,7 @@ export class Cube {
   colors: number[];
   blocks: any[][][];
   scene: THREE.Scene;
+  rotating: boolean;
 
   constructor(scene: THREE.Scene) {
     this.order = 3;
@@ -21,6 +22,7 @@ export class Cube {
     );
 
     this.createPieces();
+    this.rotating = false;
   }
 
   createPieces() {
@@ -60,12 +62,12 @@ export class Cube {
             5
           );
 
-          const faceL = new THREE.Mesh(geometryFace, materials[4]); // Orange
-          const faceR = new THREE.Mesh(geometryFace, materials[0]); // Red
-          const faceF = new THREE.Mesh(geometryFace, materials[1]); // Green
-          const faceB = new THREE.Mesh(geometryFace, materials[2]); // Blue
-          const faceD = new THREE.Mesh(geometryFace, materials[3]); // Yellow
-          const faceU = new THREE.Mesh(geometryFace, materials[5]); // White
+          const faceL = new THREE.Mesh(geometryFace, materials[2]); // Blue
+          const faceR = new THREE.Mesh(geometryFace, materials[1]); // Green
+          const faceF = new THREE.Mesh(geometryFace, materials[0]); // Red
+          const faceB = new THREE.Mesh(geometryFace, materials[4]); // Orange
+          const faceD = new THREE.Mesh(geometryFace, materials[5]); // White
+          const faceU = new THREE.Mesh(geometryFace, materials[3]); // Yellow
           const box = new THREE.Mesh(geometryBox, materialBox);
 
           // Rotations
@@ -140,6 +142,184 @@ export class Cube {
       }
     }
   }
+
+  rotationMatrixHelper = (i: number, j: number, direction = "clockwise") => {
+    const translationOffset = (this.order - 1) / 2;
+    // Pivot point rotation
+    // Translate to -offset
+    // x' = -y and y' = x;
+    // Translate back to +offset
+    const translatedI = i - translationOffset;
+    const translatedJ = j - translationOffset;
+
+    const rotatedI = translatedJ * (direction === "clockwise" ? -1 : 1);
+    const rotatedJ = translatedI * (direction === "clockwise" ? 1 : -1);
+
+    const x = rotatedI + translationOffset;
+    const y = rotatedJ + translationOffset;
+    return { x, y };
+  };
+
+  rotateSclice = (
+    axis: string,
+    index: number,
+    direction: string,
+    del = false
+  ) => {
+    return new Promise((resolve, reject) => {
+      if (this.rotating) {
+        console.log("Already in one rotation...!");
+        return;
+      }
+      if (index >= this.order)
+        throw new Error(
+          "Rotation not possible on this index : " +
+            index +
+            " because maximum size is : " +
+            (this.order - 1)
+        );
+      if ("xyz".indexOf(axis) == -1)
+        throw new Error("Rotation on invalid axis: " + axis);
+      let dirAngle = 0;
+      let rotationAngleInterval = 10;
+      const tempSclice: Record<string, string> = {};
+      this.rotating = true;
+      switch (axis) {
+        case "x":
+          dirAngle = direction === "clockwise" ? 1 : -1;
+          for (let i = 0; i < this.order; i++) {
+            for (let j = 0; j < this.order; j++) {
+              if (del) this.scene.remove(this.blocks[index][i][j].piece);
+
+              // Backing up
+              if (!tempSclice["" + i + j])
+                tempSclice["" + i + j] = this.blocks[index][i][j].piece;
+
+              const { x, y } = this.rotationMatrixHelper(
+                i,
+                j,
+                direction == "clockwise" ? "" : "clockwise"
+              );
+              this.blocks[index][i][j].piece =
+                tempSclice["" + x + y] || this.blocks[index][x][y].piece;
+
+              let totalAngle = rotationAngleInterval;
+
+              const doRotationAnimation = () => {
+                if (totalAngle == 90) {
+                  this.rotating = false;
+                  setTimeout(() => resolve("done"), 500);
+                } else requestAnimationFrame(doRotationAnimation);
+
+                const rotation = new THREE.Matrix4().makeRotationX(
+                  degree(rotationAngleInterval * dirAngle)
+                );
+                this.blocks[index][i][j].piece.applyMatrix4(rotation);
+                totalAngle += rotationAngleInterval;
+              };
+              doRotationAnimation();
+            }
+          }
+          break;
+        case "y":
+          dirAngle = direction === "clockwise" ? 1 : -1;
+          for (let i = 0; i < this.order; i++) {
+            for (let j = 0; j < this.order; j++) {
+              if (del) this.scene.remove(this.blocks[i][index][j].piece);
+              // Backing up
+              if (!tempSclice["" + i + j])
+                tempSclice["" + i + j] = this.blocks[i][index][j].piece;
+
+              const { x, y } = this.rotationMatrixHelper(i, j, direction);
+              this.blocks[i][index][j].piece =
+                tempSclice["" + x + y] || this.blocks[x][index][y].piece;
+
+              let totalAngle = rotationAngleInterval;
+
+              const doRotationAnimation = () => {
+                if (totalAngle == 90) {
+                  this.rotating = false;
+                  setTimeout(() => resolve("done"), 500);
+                } else requestAnimationFrame(doRotationAnimation);
+
+                const rotation = new THREE.Matrix4().makeRotationY(
+                  degree(rotationAngleInterval * dirAngle)
+                );
+                this.blocks[i][index][j].piece.applyMatrix4(rotation);
+                totalAngle += rotationAngleInterval;
+              };
+              doRotationAnimation();
+            }
+          }
+          break;
+        case "z":
+          dirAngle = direction === "clockwise" ? 1 : -1;
+          for (let i = 0; i < this.order; i++) {
+            for (let j = 0; j < this.order; j++) {
+              // scene.remove(this.blocks[i][j][index].piece);
+              if (del) this.scene.remove(this.blocks[i][j][index].piece);
+              // Backing up
+              if (!tempSclice["" + i + j])
+                tempSclice["" + i + j] = this.blocks[i][j][index].piece;
+
+              const { x, y } = this.rotationMatrixHelper(
+                i,
+                j,
+                direction == "clockwise" ? "" : "clockwise"
+              );
+              this.blocks[i][j][index].piece =
+                tempSclice["" + x + y] || this.blocks[x][y][index].piece;
+
+              let totalAngle = rotationAngleInterval;
+
+              const doRotationAnimation = () => {
+                if (totalAngle == 90) {
+                  this.rotating = false;
+                  setTimeout(() => resolve("done"), 500);
+                } else requestAnimationFrame(doRotationAnimation);
+
+                const rotation = new THREE.Matrix4().makeRotationZ(
+                  degree(rotationAngleInterval * dirAngle)
+                );
+                this.blocks[i][j][index].piece.applyMatrix4(rotation);
+                totalAngle += rotationAngleInterval;
+              };
+              doRotationAnimation();
+            }
+          }
+          break;
+      }
+    });
+  };
+
+  rotate = (notation: string) => {
+    const mapping: Record<string, () => {}> = {
+      U: () => this.rotateSclice("y", 2, "anticlockwise"),
+      Uprime: () => this.rotateSclice("y", 2, "clockwise"),
+      D: () => this.rotateSclice("y", 0, "clockwise"),
+      Dprime: () => this.rotateSclice("y", 0, "anticlockwise"),
+      R: () => this.rotateSclice("z", 0, "clockwise"),
+      Rprime: () => this.rotateSclice("z", 0, "anticlockwise"),
+      L: () => this.rotateSclice("z", 2, "anticlockwise"),
+      Lprime: () => this.rotateSclice("z", 2, "clockwise"),
+      F: () => this.rotateSclice("x", 2, "anticlockwise"),
+      Fprime: () => this.rotateSclice("x", 2, "clockwise"),
+      B: () => this.rotateSclice("x", 0, "clockwise"),
+      Bprime: () => this.rotateSclice("x", 0, "anticlockwise"),
+      M: () => this.rotateSclice("z", 1, "anticlockwise"),
+      Mprime: () => this.rotateSclice("z", 1, "clockwise"),
+      E: () => this.rotateSclice("y", 1, "clockwise"),
+      Eprime: () => this.rotateSclice("y", 1, "anticlockwise"),
+      S: () => this.rotateSclice("x", 1, "anticlockwise"),
+      Sprime: () => this.rotateSclice("x", 1, "clockwise"),
+    };
+    try {
+      return mapping[notation];
+    } catch (e) {
+      console.error("Invalid notation", e);
+      console.log("step:", notation);
+    }
+  };
 }
 
 const degree = (deg: number): number => {

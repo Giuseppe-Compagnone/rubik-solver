@@ -20,6 +20,7 @@ const RubiksCube = (props: RubiksCubeProps) => {
       if (sceneRef.current) {
         const c = new Cube(sceneRef.current);
         console.table(c.blocks);
+        c.rotate("R")!();
         setCube(c);
         clearInterval(timer);
       }
@@ -32,10 +33,10 @@ const RubiksCube = (props: RubiksCubeProps) => {
     camera.position.set(-3, 3, -3);
     camera.lookAt(0, 0, 0);
   }, [camera]);
+
   return (
     <>
       <scene ref={sceneRef} />
-
       <OrbitControls ref={controlsRef} enableZoom={false} enablePan={false} />
     </>
   );
