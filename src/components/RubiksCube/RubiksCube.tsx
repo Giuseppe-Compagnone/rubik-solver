@@ -20,7 +20,10 @@ const RubiksCube = (props: RubiksCubeProps) => {
       if (sceneRef.current) {
         const c = new Cube(sceneRef.current);
         console.table(c.blocks);
-        c.rotate("R")!();
+        c.rotate("R")();
+        setTimeout(() => {
+          c.rotate("L")();
+        }, 500);
         setCube(c);
         clearInterval(timer);
       }

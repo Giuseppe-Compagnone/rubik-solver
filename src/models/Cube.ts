@@ -318,6 +318,7 @@ export class Cube {
     } catch (e) {
       console.error("Invalid notation", e);
       console.log("step:", notation);
+      return () => {};
     }
   };
 }
