@@ -8,12 +8,14 @@ export class Cube {
   blocks: any[][][];
   scene: THREE.Scene;
   rotating: boolean;
+  front: string;
 
   constructor(scene: THREE.Scene) {
     this.order = 3;
     this.pieceSize = 1;
     this.colors = [0xff0000, 0x00ff00, 0x0000ff, 0xffff00, 0xff8c00, 0xffffff];
     this.scene = scene;
+    this.front = "B";
 
     this.blocks = Array.from({ length: this.order }, () =>
       Array.from({ length: this.order }, () =>
@@ -305,6 +307,7 @@ export class Cube {
       S: () => this.rotateSclice("x", 1, "anticlockwise"),
       Sprime: () => this.rotateSclice("x", 1, "clockwise"),
     };
+
     try {
       return mapping[notation];
     } catch (e) {
@@ -313,6 +316,38 @@ export class Cube {
       return () => {};
     }
   };
+
+  getFrontFace(rotation: THREE.Vector3): string {
+    const faceNormals = {
+      F: new THREE.Vector3(0, 0, 1),
+      B: new THREE.Vector3(0, 0, -1),
+      R: new THREE.Vector3(1, 0, 0),
+      L: new THREE.Vector3(-1, 0, 0),
+    };
+
+    const faceColors: Record<string, string> = {
+      F: "ff8c00",
+      B: "ff0000",
+      R: "0000ff",
+      L: "00ff00",
+    };
+
+    let maxDot = -Infinity;
+    let frontFace = this.front;
+
+    for (const [face, normal] of Object.entries(faceNormals)) {
+      const dot = rotation.dot(normal);
+      if (dot > maxDot) {
+        maxDot = dot;
+        frontFace = face;
+      }
+    }
+
+    this.front = frontFace;
+    console.log(frontFace);
+
+    return faceColors[frontFace];
+  }
 }
 
 const degree = (deg: number): number => {

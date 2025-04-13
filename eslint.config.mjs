@@ -16,7 +16,6 @@ const eslintConfig = [
       "react-hooks/exhaustive-deps": "off",
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-empty-object-type": "off",
-      "readable-tailwind/sort-classes": "warn",
       "react/jsx-key": "error",
       "@next/next/no-img-element": "off",
       "jsx-a11y/alt-text": "off",
@@ -24,7 +23,7 @@ const eslintConfig = [
       "no-console": "off",
       "padding-line-between-statements": "off",
       "sort-imports": "off",
-      "no-unused-vars": "off",
+      "no-unused-vars": "error",
       "@typescript-eslint/no-unused-vars": [
         "error",
         { argsIgnorePattern: "(^_|props)" },

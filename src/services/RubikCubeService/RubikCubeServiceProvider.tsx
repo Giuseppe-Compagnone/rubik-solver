@@ -3,15 +3,17 @@
 import { Cube } from "@/models";
 import { RubikCubeServiceProviderProps } from "./RubikCubeService.types";
 import { RubikCubeServiceContext } from "./RubikCubeServiceContext";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const RubikCubeServiceProvider = (props: RubikCubeServiceProviderProps) => {
+  //States
+  const [frontFace, setFrontFace] = useState<string>("ff0000");
+
   // Hooks
   const cube = useRef<Cube | null>(null);
 
   //Effects
   useEffect(() => {
-    console.log("go");
     const handleKeyDown = (event: KeyboardEvent) => {
       const moves = ["R", "L", "U", "D", "F", "B", "M", "E", "S"];
 
@@ -34,6 +36,8 @@ const RubikCubeServiceProvider = (props: RubikCubeServiceProviderProps) => {
     <RubikCubeServiceContext.Provider
       value={{
         cube,
+        frontFace,
+        setFrontFace,
       }}
     >
       {props.children}
