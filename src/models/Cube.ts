@@ -160,7 +160,7 @@ export class Cube {
     direction: string,
     del = false
   ) => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       if (this.rotating) {
         console.log("Already in one rotation...!");
         return;
@@ -175,7 +175,7 @@ export class Cube {
       if ("xyz".indexOf(axis) == -1)
         throw new Error("Rotation on invalid axis: " + axis);
       let dirAngle = 0;
-      let rotationAngleInterval = 10;
+      const rotationAngleInterval = 10;
       const tempSclice: Record<string, string> = {};
       this.rotating = true;
       switch (axis) {
@@ -286,7 +286,9 @@ export class Cube {
     });
   };
 
-  rotate = (notation: string) => {
+  rotate = (rotation: string) => {
+    const mappedMove = this.mapMove(rotation);
+
     const mapping: Record<string, () => {}> = {
       U: () => this.rotateSclice("y", 2, "anticlockwise"),
       Uprime: () => this.rotateSclice("y", 2, "clockwise"),
@@ -309,10 +311,10 @@ export class Cube {
     };
 
     try {
-      return mapping[notation];
+      return mapping[mappedMove];
     } catch (e) {
       console.error("Invalid notation", e);
-      console.log("step:", notation);
+      console.log("step:", rotation);
       return () => {};
     }
   };
@@ -347,6 +349,95 @@ export class Cube {
     console.log(frontFace);
 
     return faceColors[frontFace];
+  }
+
+  mapMove(move: string): string {
+    const rotationMap: Record<string, Record<string, string>> = {
+      F: {
+        F: "R",
+        R: "B",
+        B: "L",
+        L: "F",
+        U: "U",
+        D: "D",
+        M: "S",
+        E: "E",
+        S: "Mprime",
+        Fprime: "Rprime",
+        Rprime: "Bprime",
+        Bprime: "Lprime",
+        Lprime: "Fprime",
+        Uprime: "Uprime",
+        Dprime: "Dprime",
+        Mprime: "Sprime",
+        Eprime: "Eprime",
+        Sprime: "M",
+      },
+      R: {
+        F: "B",
+        R: "L",
+        B: "F",
+        L: "R",
+        U: "U",
+        D: "D",
+        M: "Mprime",
+        E: "E",
+        S: "Sprime",
+        Fprime: "Bprime",
+        Rprime: "Lprime",
+        Bprime: "Fprime",
+        Lprime: "Rprime",
+        Uprime: "Uprime",
+        Dprime: "Dprime",
+        Mprime: "M",
+        Eprime: "Eprime",
+        Sprime: "S",
+      },
+      B: {
+        F: "L",
+        R: "F",
+        B: "R",
+        L: "B",
+        U: "U",
+        D: "D",
+        M: "Sprime",
+        E: "E",
+        S: "M",
+        Fprime: "Lprime",
+        Rprime: "Fprime",
+        Bprime: "Rprime",
+        Lprime: "Bprime",
+        Uprime: "Uprime",
+        Dprime: "Dprime",
+        Mprime: "S",
+        Eprime: "Eprime",
+        Sprime: "Mprime",
+      },
+      L: {
+        F: "F",
+        R: "R",
+        B: "B",
+        L: "L",
+        U: "U",
+        D: "D",
+        M: "M",
+        E: "E",
+        S: "S",
+        Fprime: "Fprime",
+        Rprime: "Rprime",
+        Bprime: "Bprime",
+        Lprime: "Lprime",
+        Uprime: "Uprime",
+        Dprime: "Dprime",
+        Mprime: "Mprime",
+        Eprime: "Eprime",
+        Sprime: "Sprime",
+      },
+    };
+
+    const currentFront = this.front;
+    const mapped = rotationMap[currentFront][move];
+    return mapped;
   }
 }
 
