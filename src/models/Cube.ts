@@ -343,7 +343,6 @@ export class Cube {
     }
 
     this.front = frontFace;
-    console.log(frontFace);
 
     return faceColors[frontFace];
   }
@@ -448,7 +447,7 @@ export class Cube {
 
     for (const move of moves) {
       this.rotate(move)();
-      await sleep(180);
+      await sleep(220);
     }
   }
 }
