@@ -33,6 +33,7 @@ const LeftCol = (props: LeftColProps) => {
               e.preventDefault();
               setAlgorithm(e.target.value.toUpperCase());
             }}
+            placeholder="F2 R' U R U2 L2 D2 L U2 L D2 F2 L F2 D' B L F' L' U F'"
           />
           <FontAwesomeIcon
             icon={faArrowUp}

@@ -40,6 +40,11 @@
         background: #1e1e1e;
         color: #fff;
         font-size: 1.2rem;
+
+        &::placeholder {
+          font-style: italic;
+          opacity: 0.2;
+        }
       }
 
       .icon {

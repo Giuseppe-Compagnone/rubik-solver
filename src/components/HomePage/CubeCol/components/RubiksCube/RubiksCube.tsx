@@ -36,7 +36,10 @@ const RubiksCube = (props: RubiksCubeProps) => {
       }
     }, 200);
 
-    return () => clearInterval(timer);
+    return () => {
+      clearInterval(timer);
+      sceneRef.current?.clear();
+    };
   }, [sceneRef.current]);
 
   useEffect(() => {

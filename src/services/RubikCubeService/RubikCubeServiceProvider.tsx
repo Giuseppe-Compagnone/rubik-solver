@@ -20,7 +20,8 @@ const RubikCubeServiceProvider = (props: RubikCubeServiceProviderProps) => {
       if (
         target.tagName === "INPUT" ||
         target.tagName === "TEXTAREA" ||
-        target.isContentEditable
+        target.isContentEditable ||
+        event.ctrlKey
       ) {
         return;
       }
