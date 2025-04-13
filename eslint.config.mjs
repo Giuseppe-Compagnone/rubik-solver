@@ -23,7 +23,7 @@ const eslintConfig = [
       "no-console": "off",
       "padding-line-between-statements": "off",
       "sort-imports": "off",
-      "no-unused-vars": "error",
+      "no-unused-vars": "off",
       "@typescript-eslint/no-unused-vars": [
         "error",
         { argsIgnorePattern: "(^_|props)" },

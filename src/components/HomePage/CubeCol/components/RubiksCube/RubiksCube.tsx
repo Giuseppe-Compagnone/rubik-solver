@@ -2,7 +2,7 @@
 
 import { OrbitControls } from "@react-three/drei";
 import { RubiksCubeProps } from "./RubiksCube.types";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { Cube } from "@/models";
 import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
