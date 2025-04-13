@@ -15,6 +15,16 @@ const RubikCubeServiceProvider = (props: RubikCubeServiceProviderProps) => {
   //Effects
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement;
+
+      if (
+        target.tagName === "INPUT" ||
+        target.tagName === "TEXTAREA" ||
+        target.isContentEditable
+      ) {
+        return;
+      }
+
       const moves = ["R", "L", "U", "D", "F", "B", "M", "E", "S"];
 
       console.log(event.key, cube.current);

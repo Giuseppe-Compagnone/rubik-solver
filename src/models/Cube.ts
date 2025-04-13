@@ -1,3 +1,4 @@
+import { degree, sleep } from "@/utils";
 import * as THREE from "three";
 import { RoundedBoxGeometry } from "three/examples/jsm/Addons.js";
 
@@ -139,10 +140,6 @@ export class Cube {
 
   rotationMatrixHelper = (i: number, j: number, direction = "clockwise") => {
     const translationOffset = (this.order - 1) / 2;
-    // Pivot point rotation
-    // Translate to -offset
-    // x' = -y and y' = x;
-    // Translate back to +offset
     const translatedI = i - translationOffset;
     const translatedJ = j - translationOffset;
 
@@ -439,8 +436,16 @@ export class Cube {
     const mapped = rotationMap[currentFront][move];
     return mapped;
   }
-}
 
-const degree = (deg: number): number => {
-  return (deg * Math.PI) / 180;
-};
+  async applyAlgorithm(algorithm: string) {
+    const moves = algorithm
+      .replaceAll(/\b([URFDLB])2\b/g, (_, move) => `${move} ${move}`)
+      .split(" ")
+      .map((move) => move.replaceAll("'", "prime"));
+
+    for (const move of moves) {
+      this.rotate(move)();
+      await sleep(180);
+    }
+  }
+}

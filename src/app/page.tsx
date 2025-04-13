@@ -1,14 +1,13 @@
 "use client";
 
-import { CubeCol } from "@/components";
-import { useRubikCubeService } from "@/services";
+import { CubeCol, LeftCol, RightCol } from "@/components";
 
 export default function Home() {
   return (
     <div className="home-page">
-      <div className=""></div>
+      <LeftCol />
       <CubeCol />
-      <div className=""></div>
+      <RightCol />
     </div>
   );
 }
