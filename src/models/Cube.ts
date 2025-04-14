@@ -155,10 +155,11 @@ export class Cube {
     axis: string,
     index: number,
     direction: string,
+    algorithm: boolean = false,
     del = false
   ) => {
     return new Promise((resolve) => {
-      if (this.rotating) {
+      if (this.rotating && !algorithm) {
         console.log("Already in one rotation...!");
         return;
       }
@@ -198,7 +199,7 @@ export class Cube {
 
               const doRotationAnimation = () => {
                 if (totalAngle == 90) {
-                  this.rotating = false;
+                  if (!algorithm) this.rotating = false;
                   setTimeout(() => resolve("done"), 500);
                 } else requestAnimationFrame(doRotationAnimation);
 
@@ -229,7 +230,7 @@ export class Cube {
 
               const doRotationAnimation = () => {
                 if (totalAngle == 90) {
-                  this.rotating = false;
+                  if (!algorithm) this.rotating = false;
                   setTimeout(() => resolve("done"), 500);
                 } else requestAnimationFrame(doRotationAnimation);
 
@@ -265,7 +266,7 @@ export class Cube {
 
               const doRotationAnimation = () => {
                 if (totalAngle == 90) {
-                  this.rotating = false;
+                  if (!algorithm) this.rotating = false;
                   setTimeout(() => resolve("done"), 500);
                 } else requestAnimationFrame(doRotationAnimation);
 
@@ -283,28 +284,28 @@ export class Cube {
     });
   };
 
-  rotate = (rotation: string) => {
+  rotate = (rotation: string, algorithm: boolean = false) => {
     const mappedMove = this.mapMove(rotation);
 
     const mapping: Record<string, () => {}> = {
-      U: () => this.rotateSclice("y", 2, "anticlockwise"),
-      Uprime: () => this.rotateSclice("y", 2, "clockwise"),
-      D: () => this.rotateSclice("y", 0, "clockwise"),
-      Dprime: () => this.rotateSclice("y", 0, "anticlockwise"),
-      R: () => this.rotateSclice("z", 0, "clockwise"),
-      Rprime: () => this.rotateSclice("z", 0, "anticlockwise"),
-      L: () => this.rotateSclice("z", 2, "anticlockwise"),
-      Lprime: () => this.rotateSclice("z", 2, "clockwise"),
-      F: () => this.rotateSclice("x", 2, "anticlockwise"),
-      Fprime: () => this.rotateSclice("x", 2, "clockwise"),
-      B: () => this.rotateSclice("x", 0, "clockwise"),
-      Bprime: () => this.rotateSclice("x", 0, "anticlockwise"),
-      M: () => this.rotateSclice("z", 1, "anticlockwise"),
-      Mprime: () => this.rotateSclice("z", 1, "clockwise"),
-      E: () => this.rotateSclice("y", 1, "clockwise"),
-      Eprime: () => this.rotateSclice("y", 1, "anticlockwise"),
-      S: () => this.rotateSclice("x", 1, "anticlockwise"),
-      Sprime: () => this.rotateSclice("x", 1, "clockwise"),
+      U: () => this.rotateSclice("y", 2, "anticlockwise", algorithm),
+      Uprime: () => this.rotateSclice("y", 2, "clockwise", algorithm),
+      D: () => this.rotateSclice("y", 0, "clockwise", algorithm),
+      Dprime: () => this.rotateSclice("y", 0, "anticlockwise", algorithm),
+      R: () => this.rotateSclice("z", 0, "clockwise", algorithm),
+      Rprime: () => this.rotateSclice("z", 0, "anticlockwise", algorithm),
+      L: () => this.rotateSclice("z", 2, "anticlockwise", algorithm),
+      Lprime: () => this.rotateSclice("z", 2, "clockwise", algorithm),
+      F: () => this.rotateSclice("x", 2, "anticlockwise", algorithm),
+      Fprime: () => this.rotateSclice("x", 2, "clockwise", algorithm),
+      B: () => this.rotateSclice("x", 0, "clockwise", algorithm),
+      Bprime: () => this.rotateSclice("x", 0, "anticlockwise", algorithm),
+      M: () => this.rotateSclice("z", 1, "anticlockwise", algorithm),
+      Mprime: () => this.rotateSclice("z", 1, "clockwise", algorithm),
+      E: () => this.rotateSclice("y", 1, "clockwise", algorithm),
+      Eprime: () => this.rotateSclice("y", 1, "anticlockwise", algorithm),
+      S: () => this.rotateSclice("x", 1, "anticlockwise", algorithm),
+      Sprime: () => this.rotateSclice("x", 1, "clockwise", algorithm),
     };
 
     try {
@@ -317,6 +318,7 @@ export class Cube {
   };
 
   getFrontFace(rotation: THREE.Vector3): string {
+    if (this.rotating) return this.front;
     const faceNormals = {
       F: new THREE.Vector3(0, 0, 1),
       B: new THREE.Vector3(0, 0, -1),
@@ -446,8 +448,10 @@ export class Cube {
       .map((move) => move.replaceAll("'", "prime"));
 
     for (const move of moves) {
-      this.rotate(move)();
+      this.rotate(move, true)();
       await sleep(220);
     }
+
+    this.rotating = false;
   }
 }
