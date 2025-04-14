@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import AlgorithmButton from "@/components/AlgorithmButton";
+import { faGithub } from "@fortawesome/free-brands-svg-icons";
 
 const RightCol = (props: RightColProps) => {
   //States
@@ -77,6 +78,11 @@ const RightCol = (props: RightColProps) => {
             </Collapsible>
           );
         })}
+      <div className="credits">
+        <a href="https://github.com/Giuseppe-Compagnone" target="_blank">
+          Made by Giuseppe Compagnone <FontAwesomeIcon icon={faGithub} />
+        </a>
+      </div>
     </div>
   );
 };
