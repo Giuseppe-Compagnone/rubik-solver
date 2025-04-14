@@ -440,6 +440,7 @@ export class Cube {
 
   async applyAlgorithm(algorithm: string) {
     const moves = algorithm
+      .trim()
       .replaceAll(/\b([URFDLBMESxyz])('?)(\d+)\b/g, (_, move, prime, count) => {
         const fullMove = move + prime;
         return Array(Number(count)).fill(fullMove).join(" ");

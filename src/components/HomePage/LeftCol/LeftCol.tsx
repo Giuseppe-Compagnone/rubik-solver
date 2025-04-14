@@ -4,6 +4,7 @@ import { LeftColProps } from "./LeftCol.types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
 import { useRubikCubeService } from "@/services";
+import { NotificationHandler } from "@/utils";
 
 const LeftCol = (props: LeftColProps) => {
   //States
@@ -15,6 +16,12 @@ const LeftCol = (props: LeftColProps) => {
   //Methods
   const handleAlgorithm = () => {
     if (algorithm.trim() === "") return;
+    if (
+      !/^([RLMUDBESF](?:'?\d*)\s)*[RLMUDBESF](?:'?\d*)$/.test(algorithm.trim())
+    ) {
+      NotificationHandler.instance.error("Invalid algorithm format");
+      return;
+    }
     cube.current?.applyAlgorithm(algorithm);
     setAlgorithm("");
   };
