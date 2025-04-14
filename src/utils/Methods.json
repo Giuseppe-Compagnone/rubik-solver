@@ -18,7 +18,7 @@
             "algorithm": "F' U' F"
           },
           {
-            "name": "Up",
+            "name": "Top",
             "algorithm": "R U2 R'"
           }
         ]
@@ -58,11 +58,11 @@
         "algorithms": [
           {
             "name": "Opposite Edges",
-            "algorithm": "R U R' U R U2 R'"
+            "algorithm": "R U R' U R U2 R' U"
           },
           {
             "name": "Adjacent Edges",
-            "algorithm": "R U R' U R U2 R'"
+            "algorithm": "R U R' U R U2 R' U"
           }
         ]
       },
