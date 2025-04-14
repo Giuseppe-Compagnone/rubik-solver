@@ -58,7 +58,13 @@ const RightCol = (props: RightColProps) => {
                             key={k}
                             name={algorithm.name}
                             algorithm={algorithm.algorithm}
-                            image={"https://picsum.photos/200/200"}
+                            image={`images/methods/${method.method
+                              .toLowerCase()
+                              .replaceAll(" ", "-")}/${phase.phase
+                              .toLowerCase()
+                              .replaceAll(" ", "-")}/${algorithm.name
+                              .toLowerCase()
+                              .replaceAll(" ", "-")}.png`}
                           />
                         );
                       })

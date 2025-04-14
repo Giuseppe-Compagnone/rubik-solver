@@ -101,7 +101,7 @@
             "algorithm": "R U R'"
           },
           {
-            "name": "Left",
+            "name": "Right",
             "algorithm": "R U2 R' U R U' R'"
           },
           {
@@ -152,7 +152,7 @@
           },
           {
             "name": "Pi",
-            "algorithm": "R U2 R2' U' R2 U' R2' U2 R"
+            "algorithm": "R U2 R2 U' R2 U' R2 U2 R"
           },
           {
             "name": "Headlights",
@@ -160,11 +160,11 @@
           },
           {
             "name": "T",
-            "algorithm": "R M U R' U' M' R' F R F'"
+            "algorithm": "R M' U R' U' M R' F R F'"
           },
           {
             "name": "Bowtie",
-            "algorithm": "L' R U R' U' L"
+            "algorithm": "L' R U R' U' L U R U' R'"
           }
         ]
       },
@@ -177,7 +177,7 @@
           },
           {
             "name": "Ub Perm",
-            "algorithm": "R2 U (R U R' U') R' U' R' U R'"
+            "algorithm": "R2 U R U R' U' R' U' R' U R'"
           },
           {
             "name": "H Perm",
@@ -201,15 +201,15 @@
           },
           {
             "name": "Y Perm",
-            "algorithm": "F R U' R' U' R U R'F' R U R' U' R F R F'"
+            "algorithm": "F R U' R' U' R U R' F' R U R' U' R' F R F'"
           },
           {
             "name": "Ja Perm",
-            "algorithm": "L' U' L F L' U' L U L F' L2 U L "
+            "algorithm": "L' U' L F L' U' L U L F' L2 U L U"
           },
           {
             "name": "Jb Perm",
-            "algorithm": "R U R' F' R U R' U' R'F R2 U' R' U'"
+            "algorithm": "R U R' F' R U R' U' R' F R2 U' R' U'"
           }
         ]
       }
