@@ -1,0 +1,33 @@
+// AlgorithmButton
+
+.algorithm-button {
+  padding: 1rem;
+  cursor: pointer;
+  outline: none;
+  background: rgb(30 30 30);
+  border: none;
+  border-radius: 0.3rem;
+  font-weight: bold;
+  transition: all 0.2s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+
+  .image {
+    width: 100%;
+    aspect-ratio: 1/1;
+    height: unset;
+  }
+
+  .name {
+    color: #fff;
+    text-align: center;
+  }
+
+  &:hover {
+    scale: 1.1;
+  }
+}
