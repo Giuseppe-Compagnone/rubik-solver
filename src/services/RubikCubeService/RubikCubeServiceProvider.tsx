@@ -28,7 +28,6 @@ const RubikCubeServiceProvider = (props: RubikCubeServiceProviderProps) => {
 
       const moves = ["R", "L", "U", "D", "F", "B", "M", "E", "S"];
 
-      console.log(event.key, cube.current);
       if (moves.includes(event.key.toUpperCase())) {
         cube.current?.rotate(
           `${event.key.toUpperCase()}${event.shiftKey ? "prime" : ""}`
@@ -42,6 +41,19 @@ const RubikCubeServiceProvider = (props: RubikCubeServiceProviderProps) => {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
+
+  useEffect(() => {
+    const faviconUrl = `/images/meta/favicons/${frontFace}.png`;
+    const link: HTMLLinkElement =
+      document.querySelector("link[rel*='icon']") ||
+      document.createElement("link");
+
+    link.type = "image/x-icon";
+    link.rel = "shortcut icon";
+    link.href = faviconUrl;
+
+    document.getElementsByTagName("head")[0].appendChild(link);
+  }, [frontFace]);
 
   return (
     <RubikCubeServiceContext.Provider

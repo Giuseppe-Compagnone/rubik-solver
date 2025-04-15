@@ -32,11 +32,30 @@ export class Cube {
     const gap = 1.01;
     const skinProjection = -0.101;
 
+    const halfOrder = (this.order - 1) / 2;
+    const halfPiece = this.pieceSize / 2;
+
+    const geometryBox = new RoundedBoxGeometry(
+      this.pieceSize,
+      this.pieceSize,
+      this.pieceSize,
+      5,
+      0.1
+    );
+    const geometryFace = new RoundedBoxGeometry(
+      this.pieceSize * 0.9,
+      this.pieceSize * 0.9,
+      0.3,
+      5,
+      5
+    );
+
     const materialBox = new THREE.MeshStandardMaterial({
       color: 0x111111,
       side: THREE.DoubleSide,
       roughness: 0.8,
     });
+
     const materials = this.colors.map(
       (color) =>
         new THREE.MeshStandardMaterial({
@@ -46,91 +65,99 @@ export class Cube {
         })
     );
 
+    const faces: {
+      axis: "x" | "y" | "z";
+      index: number;
+      rotation: [number, number, number];
+      offset: [number, number, number];
+      materialIndex: number;
+      key: string;
+    }[] = [
+      {
+        axis: "y",
+        index: this.order - 1,
+        rotation: [degree(90), 0, 0],
+        offset: [0, halfPiece + skinProjection, 0],
+        materialIndex: 3,
+        key: "U",
+      },
+      {
+        axis: "y",
+        index: 0,
+        rotation: [degree(90), 0, 0],
+        offset: [0, -halfPiece - skinProjection, 0],
+        materialIndex: 5,
+        key: "D",
+      },
+      {
+        axis: "z",
+        index: this.order - 1,
+        rotation: [0, 0, degree(90)],
+        offset: [0, 0, halfPiece + skinProjection],
+        materialIndex: 0,
+        key: "F",
+      },
+      {
+        axis: "z",
+        index: 0,
+        rotation: [0, 0, degree(90)],
+        offset: [0, 0, -halfPiece - skinProjection],
+        materialIndex: 4,
+        key: "B",
+      },
+      {
+        axis: "x",
+        index: 0,
+        rotation: [0, degree(90), 0],
+        offset: [-halfPiece - skinProjection, 0, 0],
+        materialIndex: 2,
+        key: "L",
+      },
+      {
+        axis: "x",
+        index: this.order - 1,
+        rotation: [0, degree(90), 0],
+        offset: [halfPiece + skinProjection, 0, 0],
+        materialIndex: 1,
+        key: "R",
+      },
+    ];
+
     for (let i = 0; i < this.order; i++) {
       for (let j = 0; j < this.order; j++) {
         for (let k = 0; k < this.order; k++) {
-          const geometryBox = new RoundedBoxGeometry(
-            this.pieceSize,
-            this.pieceSize,
-            this.pieceSize,
-            5,
-            0.1
-          );
+          const x = (i - halfOrder) * gap;
+          const y = (j - halfOrder) * gap;
+          const z = (k - halfOrder) * gap;
 
-          const geometryFace = new RoundedBoxGeometry(
-            this.pieceSize * 0.9,
-            this.pieceSize * 0.9,
-            0.3,
-            5,
-            5
-          );
-
-          const faceL = new THREE.Mesh(geometryFace, materials[2]); // Blue
-          const faceR = new THREE.Mesh(geometryFace, materials[1]); // Green
-          const faceF = new THREE.Mesh(geometryFace, materials[0]); // Red
-          const faceB = new THREE.Mesh(geometryFace, materials[4]); // Orange
-          const faceD = new THREE.Mesh(geometryFace, materials[5]); // White
-          const faceU = new THREE.Mesh(geometryFace, materials[3]); // Yellow
           const box = new THREE.Mesh(geometryBox, materialBox);
-
-          // Rotations
-          faceU.rotation.set(degree(90), 0, 0);
-          faceD.rotation.set(degree(90), 0, 0);
-          faceF.rotation.set(0, 0, degree(90));
-          faceB.rotation.set(0, 0, degree(90));
-          faceL.rotation.set(0, degree(90), 0);
-          faceR.rotation.set(0, degree(90), 0);
-
-          // Positioning
-          const x = i - (this.order - 1) / 2;
-          const y = j - (this.order - 1) / 2;
-          const z = k - (this.order - 1) / 2;
-
-          faceU.position.set(
-            x * gap,
-            y * gap + (this.pieceSize / 2 + skinProjection),
-            z * gap
-          );
-          faceD.position.set(
-            x * gap,
-            y * gap - (this.pieceSize / 2 + skinProjection),
-            z * gap
-          );
-          faceF.position.set(
-            x * gap,
-            y * gap,
-            z * gap + (this.pieceSize / 2 + skinProjection)
-          );
-          faceB.position.set(
-            x * gap,
-            y * gap,
-            z * gap - (this.pieceSize / 2 + skinProjection)
-          );
-          faceL.position.set(
-            x * gap - (this.pieceSize / 2 + skinProjection),
-            y * gap,
-            z * gap
-          );
-          faceR.position.set(
-            x * gap + (this.pieceSize / 2 + skinProjection),
-            y * gap,
-            z * gap
-          );
-          box.position.set(x * gap, y * gap, z * gap);
+          box.position.set(x, y, z);
 
           const pieceGroup = new THREE.Object3D();
-
-          // External faces
-
-          if (i === this.order - 1) pieceGroup.add(faceR);
-          if (i === 0) pieceGroup.add(faceL);
-          if (j === this.order - 1) pieceGroup.add(faceU);
-          if (j === 0) pieceGroup.add(faceD);
-          if (k === this.order - 1) pieceGroup.add(faceF);
-          if (k === 0) pieceGroup.add(faceB);
-
           pieceGroup.add(box);
           pieceGroup.name = `${i}${j}${k}`;
+
+          for (const face of faces) {
+            const showFace =
+              (face.axis === "x" && i === face.index) ||
+              (face.axis === "y" && j === face.index) ||
+              (face.axis === "z" && k === face.index);
+
+            if (showFace) {
+              const mesh = new THREE.Mesh(
+                geometryFace,
+                materials[face.materialIndex]
+              );
+              mesh.rotation.set(...face.rotation);
+              mesh.position.set(
+                x + (face.offset[0] || 0),
+                y + (face.offset[1] || 0),
+                z + (face.offset[2] || 0)
+              );
+              pieceGroup.add(mesh);
+            }
+          }
+
           this.scene.add(pieceGroup);
           this.blocks[i][j][k].piece = pieceGroup;
         }
@@ -155,130 +182,78 @@ export class Cube {
     axis: string,
     index: number,
     direction: string,
-    algorithm: boolean = false,
+    algorithm = false,
     del = false
   ) => {
     return new Promise((resolve) => {
-      if (this.rotating && !algorithm) {
-        console.log("Already in one rotation...!");
-        return;
-      }
+      if (this.rotating && !algorithm) return;
       if (index >= this.order)
-        throw new Error(
-          "Rotation not possible on this index : " +
-            index +
-            " because maximum size is : " +
-            (this.order - 1)
-        );
-      if ("xyz".indexOf(axis) == -1)
-        throw new Error("Rotation on invalid axis: " + axis);
-      let dirAngle = 0;
+        throw new Error(`Invalid index ${index}, max is ${this.order - 1}`);
+      if (!"xyz".includes(axis)) throw new Error(`Invalid axis: ${axis}`);
+
+      const dirAngle = direction === "clockwise" ? 1 : -1;
       const rotationAngleInterval = 10;
       const tempSclice: Record<string, string> = {};
       this.rotating = true;
+
+      const applyRotation = (
+        getBlock: (i: number, j: number) => any,
+        setBlock: (i: number, j: number, value: any) => void,
+        makeRotation: () => THREE.Matrix4,
+        rotateHelperDirection: string
+      ) => {
+        for (let i = 0; i < this.order; i++) {
+          for (let j = 0; j < this.order; j++) {
+            if (del) this.scene.remove(getBlock(i, j).piece);
+            const key = `${i}${j}`;
+            if (!tempSclice[key]) tempSclice[key] = getBlock(i, j).piece;
+
+            const { x, y } = this.rotationMatrixHelper(
+              i,
+              j,
+              rotateHelperDirection
+            );
+            setBlock(i, j, tempSclice[`${x}${y}`] || getBlock(x, y).piece);
+
+            let totalAngle = rotationAngleInterval;
+            const doRotationAnimation = () => {
+              if (totalAngle === 90) {
+                if (!algorithm) this.rotating = false;
+                setTimeout(() => resolve("done"), 500);
+              } else requestAnimationFrame(doRotationAnimation);
+              getBlock(i, j).piece.applyMatrix4(makeRotation());
+              totalAngle += rotationAngleInterval;
+            };
+            doRotationAnimation();
+          }
+        }
+      };
+
+      const degRot = () => degree(rotationAngleInterval * dirAngle);
       switch (axis) {
         case "x":
-          dirAngle = direction === "clockwise" ? 1 : -1;
-          for (let i = 0; i < this.order; i++) {
-            for (let j = 0; j < this.order; j++) {
-              if (del) this.scene.remove(this.blocks[index][i][j].piece);
-
-              // Backing up
-              if (!tempSclice["" + i + j])
-                tempSclice["" + i + j] = this.blocks[index][i][j].piece;
-
-              const { x, y } = this.rotationMatrixHelper(
-                i,
-                j,
-                direction == "clockwise" ? "" : "clockwise"
-              );
-              this.blocks[index][i][j].piece =
-                tempSclice["" + x + y] || this.blocks[index][x][y].piece;
-
-              let totalAngle = rotationAngleInterval;
-
-              const doRotationAnimation = () => {
-                if (totalAngle == 90) {
-                  if (!algorithm) this.rotating = false;
-                  setTimeout(() => resolve("done"), 500);
-                } else requestAnimationFrame(doRotationAnimation);
-
-                const rotation = new THREE.Matrix4().makeRotationX(
-                  degree(rotationAngleInterval * dirAngle)
-                );
-                this.blocks[index][i][j].piece.applyMatrix4(rotation);
-                totalAngle += rotationAngleInterval;
-              };
-              doRotationAnimation();
-            }
-          }
+          applyRotation(
+            (i, j) => this.blocks[index][i][j],
+            (i, j, val) => (this.blocks[index][i][j].piece = val),
+            () => new THREE.Matrix4().makeRotationX(degRot()),
+            direction === "clockwise" ? "" : "clockwise"
+          );
           break;
         case "y":
-          dirAngle = direction === "clockwise" ? 1 : -1;
-          for (let i = 0; i < this.order; i++) {
-            for (let j = 0; j < this.order; j++) {
-              if (del) this.scene.remove(this.blocks[i][index][j].piece);
-              // Backing up
-              if (!tempSclice["" + i + j])
-                tempSclice["" + i + j] = this.blocks[i][index][j].piece;
-
-              const { x, y } = this.rotationMatrixHelper(i, j, direction);
-              this.blocks[i][index][j].piece =
-                tempSclice["" + x + y] || this.blocks[x][index][y].piece;
-
-              let totalAngle = rotationAngleInterval;
-
-              const doRotationAnimation = () => {
-                if (totalAngle == 90) {
-                  if (!algorithm) this.rotating = false;
-                  setTimeout(() => resolve("done"), 500);
-                } else requestAnimationFrame(doRotationAnimation);
-
-                const rotation = new THREE.Matrix4().makeRotationY(
-                  degree(rotationAngleInterval * dirAngle)
-                );
-                this.blocks[i][index][j].piece.applyMatrix4(rotation);
-                totalAngle += rotationAngleInterval;
-              };
-              doRotationAnimation();
-            }
-          }
+          applyRotation(
+            (i, j) => this.blocks[i][index][j],
+            (i, j, val) => (this.blocks[i][index][j].piece = val),
+            () => new THREE.Matrix4().makeRotationY(degRot()),
+            direction
+          );
           break;
         case "z":
-          dirAngle = direction === "clockwise" ? 1 : -1;
-          for (let i = 0; i < this.order; i++) {
-            for (let j = 0; j < this.order; j++) {
-              // scene.remove(this.blocks[i][j][index].piece);
-              if (del) this.scene.remove(this.blocks[i][j][index].piece);
-              // Backing up
-              if (!tempSclice["" + i + j])
-                tempSclice["" + i + j] = this.blocks[i][j][index].piece;
-
-              const { x, y } = this.rotationMatrixHelper(
-                i,
-                j,
-                direction == "clockwise" ? "" : "clockwise"
-              );
-              this.blocks[i][j][index].piece =
-                tempSclice["" + x + y] || this.blocks[x][y][index].piece;
-
-              let totalAngle = rotationAngleInterval;
-
-              const doRotationAnimation = () => {
-                if (totalAngle == 90) {
-                  if (!algorithm) this.rotating = false;
-                  setTimeout(() => resolve("done"), 500);
-                } else requestAnimationFrame(doRotationAnimation);
-
-                const rotation = new THREE.Matrix4().makeRotationZ(
-                  degree(rotationAngleInterval * dirAngle)
-                );
-                this.blocks[i][j][index].piece.applyMatrix4(rotation);
-                totalAngle += rotationAngleInterval;
-              };
-              doRotationAnimation();
-            }
-          }
+          applyRotation(
+            (i, j) => this.blocks[i][j][index],
+            (i, j, val) => (this.blocks[i][j][index].piece = val),
+            () => new THREE.Matrix4().makeRotationZ(degRot()),
+            direction === "clockwise" ? "" : "clockwise"
+          );
           break;
       }
     });
