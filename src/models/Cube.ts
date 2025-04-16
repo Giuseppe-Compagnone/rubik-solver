@@ -76,7 +76,7 @@ export class Cube {
       {
         axis: "y",
         index: this.order - 1,
-        rotation: [degree(90), 0, 0],
+        rotation: [degree(-90), 0, 0],
         offset: [0, halfPiece + skinProjection, 0],
         materialIndex: 3,
         key: "U",
@@ -100,7 +100,7 @@ export class Cube {
       {
         axis: "z",
         index: 0,
-        rotation: [0, 0, degree(90)],
+        rotation: [0, degree(180), degree(90)],
         offset: [0, 0, -halfPiece - skinProjection],
         materialIndex: 4,
         key: "B",
@@ -108,7 +108,7 @@ export class Cube {
       {
         axis: "x",
         index: 0,
-        rotation: [0, degree(90), 0],
+        rotation: [0, degree(-90), 0],
         offset: [-halfPiece - skinProjection, 0, 0],
         materialIndex: 2,
         key: "L",
@@ -283,6 +283,8 @@ export class Cube {
       Sprime: () => this.rotateSclice("x", 1, "clockwise", algorithm),
     };
 
+    console.log(this.getState());
+
     try {
       return mapping[mappedMove];
     } catch (e) {
@@ -429,5 +431,103 @@ export class Cube {
     }
 
     this.rotating = false;
+  }
+
+  getState(): string {
+    const stickers: Record<string, string[]> = {
+      F: Array(9).fill(""),
+      B: Array(9).fill(""),
+      U: Array(9).fill(""),
+      D: Array(9).fill(""),
+      L: Array(9).fill(""),
+      R: Array(9).fill(""),
+    };
+
+    const halfOrder = Math.floor(this.order / 2);
+    const faceKeys = ["U", "D", "F", "B", "L", "R"];
+    const normalMap: Record<string, THREE.Vector3> = {
+      U: new THREE.Vector3(0, 1, 0),
+      D: new THREE.Vector3(0, -1, 0),
+      F: new THREE.Vector3(0, 0, 1),
+      B: new THREE.Vector3(0, 0, -1),
+      L: new THREE.Vector3(-1, 0, 0),
+      R: new THREE.Vector3(1, 0, 0),
+    };
+    const colorToFace: Record<number, string> = {};
+    let colorsIdentified = false;
+
+    for (let i = 0; i < this.order; i++) {
+      for (let j = 0; j < this.order; j++) {
+        for (let k = 0; k < this.order; k++) {
+          const piece = this.blocks[i][j][k].piece;
+          piece.children.forEach((mesh: THREE.Mesh) => {
+            const worldDirection = new THREE.Vector3();
+            mesh.getWorldDirection(worldDirection).round();
+
+            let faceKey = "";
+            for (const key of faceKeys) {
+              if (worldDirection.equals(normalMap[key])) {
+                faceKey = key;
+                if (
+                  !colorsIdentified &&
+                  // @ts-ignore
+                  !colorToFace[mesh.material.color.getHex()]
+                ) {
+                  // @ts-ignore
+                  colorToFace[mesh.material.color.getHex()] = key
+                    .toLowerCase()
+                    .charAt(0);
+                }
+                break;
+              }
+            }
+
+            if (faceKey) {
+              console.log(
+                "Identified face:",
+                faceKey,
+                "Normal:",
+                worldDirection.toArray()
+              );
+              const localPosition = new THREE.Vector3();
+              piece.worldToLocal(mesh.getWorldPosition(localPosition));
+
+              let index: number | undefined;
+              if (faceKey === "U") {
+                index = (halfOrder - k) * this.order + (i + halfOrder);
+              } else if (faceKey === "D") {
+                index = (k - halfOrder) * this.order + (i + halfOrder);
+              } else if (faceKey === "F") {
+                index = (halfOrder - j) * this.order + (i + halfOrder);
+              } else if (faceKey === "B") {
+                index = (j - halfOrder) * this.order + (i + halfOrder);
+              } else if (faceKey === "L") {
+                index = (halfOrder - j) * this.order + (halfOrder - k);
+              } else if (faceKey === "R") {
+                index = (halfOrder - j) * this.order + (k - halfOrder);
+              }
+
+              // @ts-ignore
+              const colorHex = mesh.material.color.getHex();
+              const colorChar = colorToFace[colorHex];
+
+              if (index !== undefined && stickers[faceKey] && colorChar) {
+                stickers[faceKey][index] = colorChar;
+              }
+            }
+          });
+        }
+      }
+    }
+    colorsIdentified = true;
+
+    return (
+      stickers.F.join("") +
+      stickers.R.join("") +
+      stickers.U.join("") +
+      stickers.D.join("") +
+      stickers.L.join("") +
+      stickers.B.join("")
+    );
   }
 }
