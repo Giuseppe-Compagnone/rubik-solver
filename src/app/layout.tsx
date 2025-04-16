@@ -10,6 +10,11 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <title>Rubik Solver</title>
+        <link
+          type="image/x-icon"
+          rel="shortcut icon"
+          href="/images/meta/favicons/ff0000.png"
+        />
       </head>
       <body>
         <ProviderWrapper>{children}</ProviderWrapper>
