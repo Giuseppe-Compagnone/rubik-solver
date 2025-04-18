@@ -1,6 +1,6 @@
 "use client";
 
-import { Cube } from "@/models";
+import { Cube, Solver } from "@/models";
 import { RubikCubeServiceProviderProps } from "./RubikCubeService.types";
 import { RubikCubeServiceContext } from "./RubikCubeServiceContext";
 import { useEffect, useRef, useState } from "react";
@@ -55,12 +55,18 @@ const RubikCubeServiceProvider = (props: RubikCubeServiceProviderProps) => {
     document.getElementsByTagName("head")[0].appendChild(link);
   }, [frontFace]);
 
+  //Methods
+  const solve = (configuration: string) => {
+    return Solver.instance.solve(configuration);
+  };
+
   return (
     <RubikCubeServiceContext.Provider
       value={{
         cube,
         frontFace,
         setFrontFace,
+        solve,
       }}
     >
       {props.children}

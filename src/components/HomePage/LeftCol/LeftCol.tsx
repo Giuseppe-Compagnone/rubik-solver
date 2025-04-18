@@ -5,13 +5,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
 import { useRubikCubeService } from "@/services";
 import { NotificationHandler } from "@/utils";
+import Button from "@/components/Button";
 
 const LeftCol = (props: LeftColProps) => {
   //States
   const [algorithm, setAlgorithm] = useState<string>("");
 
   //Hooks
-  const { cube } = useRubikCubeService();
+  const { cube, solve } = useRubikCubeService();
 
   //Methods
   const handleAlgorithm = () => {
@@ -28,6 +29,14 @@ const LeftCol = (props: LeftColProps) => {
 
   return (
     <div className="left-col">
+      <Button
+        text={"Solve"}
+        onClick={() => {
+          if (cube.current) {
+            console.log(solve(cube.current.getState()));
+          }
+        }}
+      />
       <div className="bottom-section">
         <label htmlFor="algorithm" className="label">
           Insert a scramble

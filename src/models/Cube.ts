@@ -14,7 +14,7 @@ export class Cube {
   constructor(scene: THREE.Scene) {
     this.order = 3;
     this.pieceSize = 1;
-    this.colors = [0xff0000, 0x00ff00, 0x0000ff, 0xffff00, 0xff8c00, 0xffffff];
+    this.colors = [0x00ff00, 0xff0000, 0xff8c00, 0xffffff, 0x0000ff, 0xffff00];
     this.scene = scene;
     this.front = "B";
 
@@ -64,6 +64,9 @@ export class Cube {
           roughness: 0.8,
         })
     );
+
+    // FRUDLB
+    //F rosso,R Verde,U Giallo,D White,L Blu,B Arancio
 
     const faces: {
       axis: "x" | "y" | "z";
@@ -283,8 +286,6 @@ export class Cube {
       Sprime: () => this.rotateSclice("x", 1, "clockwise", algorithm),
     };
 
-    console.log(this.getState());
-
     try {
       return mapping[mappedMove];
     } catch (e) {
@@ -304,10 +305,10 @@ export class Cube {
     };
 
     const faceColors: Record<string, string> = {
-      F: "ff8c00",
-      B: "ff0000",
-      R: "0000ff",
-      L: "00ff00",
+      F: this.colors[0].toString(16).padStart(6, "0"),
+      B: this.colors[4].toString(16).padStart(6, "0"),
+      R: this.colors[2].toString(16).padStart(6, "0"),
+      L: this.colors[1].toString(16).padStart(6, "0"),
     };
 
     let maxDot = -Infinity;
@@ -443,7 +444,6 @@ export class Cube {
       R: Array(9).fill(""),
     };
 
-    const halfOrder = Math.floor(this.order / 2);
     const faceKeys = ["U", "D", "F", "B", "L", "R"];
     const normalMap: Record<string, THREE.Vector3> = {
       U: new THREE.Vector3(0, 1, 0),
@@ -453,8 +453,14 @@ export class Cube {
       L: new THREE.Vector3(-1, 0, 0),
       R: new THREE.Vector3(1, 0, 0),
     };
-    const colorToFace: Record<number, string> = {};
-    let colorsIdentified = false;
+    const colorToFace: Record<number, string> = {
+      0x00ff00: "F",
+      0xff0000: "R",
+      0xff8c00: "L",
+      0xffffff: "U",
+      0x0000ff: "B",
+      0xffff00: "D",
+    };
 
     for (let i = 0; i < this.order; i++) {
       for (let j = 0; j < this.order; j++) {
@@ -463,48 +469,40 @@ export class Cube {
           piece.children.forEach((mesh: THREE.Mesh) => {
             const worldDirection = new THREE.Vector3();
             mesh.getWorldDirection(worldDirection).round();
-
             let faceKey = "";
             for (const key of faceKeys) {
               if (worldDirection.equals(normalMap[key])) {
                 faceKey = key;
-                if (
-                  !colorsIdentified &&
-                  // @ts-ignore
-                  !colorToFace[mesh.material.color.getHex()]
-                ) {
-                  // @ts-ignore
-                  colorToFace[mesh.material.color.getHex()] = key
-                    .toLowerCase()
-                    .charAt(0);
-                }
+
                 break;
               }
             }
 
             if (faceKey) {
-              console.log(
-                "Identified face:",
-                faceKey,
-                "Normal:",
-                worldDirection.toArray()
-              );
               const localPosition = new THREE.Vector3();
               piece.worldToLocal(mesh.getWorldPosition(localPosition));
 
               let index: number | undefined;
-              if (faceKey === "U") {
-                index = (halfOrder - k) * this.order + (i + halfOrder);
-              } else if (faceKey === "D") {
-                index = (k - halfOrder) * this.order + (i + halfOrder);
-              } else if (faceKey === "F") {
-                index = (halfOrder - j) * this.order + (i + halfOrder);
-              } else if (faceKey === "B") {
-                index = (j - halfOrder) * this.order + (i + halfOrder);
-              } else if (faceKey === "L") {
-                index = (halfOrder - j) * this.order + (halfOrder - k);
-              } else if (faceKey === "R") {
-                index = (halfOrder - j) * this.order + (k - halfOrder);
+
+              switch (faceKey) {
+                case "U":
+                  index = (2 - k) * 3 + i;
+                  break;
+                case "D":
+                  index = k * 3 + i;
+                  break;
+                case "F":
+                  index = j * 3 + i;
+                  break;
+                case "B":
+                  index = (2 - j) * 3 + i;
+                  break;
+                case "L":
+                  index = j * 3 + (2 - k);
+                  break;
+                case "R":
+                  index = j * 3 + k;
+                  break;
               }
 
               // @ts-ignore
@@ -519,15 +517,54 @@ export class Cube {
         }
       }
     }
-    colorsIdentified = true;
+
+    Object.keys(stickers).forEach((key) => {
+      if (key === "U" || key === "D") {
+        stickers[key] = [
+          stickers[key][6],
+          stickers[key][7],
+          stickers[key][8],
+          stickers[key][3],
+          stickers[key][4],
+          stickers[key][5],
+          stickers[key][0],
+          stickers[key][1],
+          stickers[key][2],
+        ];
+      } else {
+        stickers[key] = [
+          stickers[key][8],
+          stickers[key][7],
+          stickers[key][6],
+          stickers[key][5],
+          stickers[key][4],
+          stickers[key][3],
+          stickers[key][2],
+          stickers[key][1],
+          stickers[key][0],
+        ];
+      }
+    });
+
+    console.table(stickers);
+    console.log(
+      (
+        stickers.U.join("") +
+        stickers.R.join("") +
+        stickers.F.join("") +
+        stickers.D.join("") +
+        stickers.L.join("") +
+        stickers.B.join("")
+      ).toUpperCase()
+    );
 
     return (
-      stickers.F.join("") +
-      stickers.R.join("") +
       stickers.U.join("") +
+      stickers.R.join("") +
+      stickers.F.join("") +
       stickers.D.join("") +
       stickers.L.join("") +
       stickers.B.join("")
-    );
+    ).toUpperCase();
   }
 }
