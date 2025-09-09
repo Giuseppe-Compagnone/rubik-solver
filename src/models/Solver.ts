@@ -18,6 +18,7 @@ export class Solver {
       "UUBUUBUUBRRRRRRRRRFFUFFUFFUDDFDDFDDFLLLLLLLLLDBBDBBDBB"
     );
     const cube = new Cube();
+
     cube.init(scramble);
     Cube.initSolver();
 
