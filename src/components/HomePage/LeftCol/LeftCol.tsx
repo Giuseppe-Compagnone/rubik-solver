@@ -6,11 +6,13 @@ import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
 import { useRubikCubeService } from "@/services";
 import { NotificationHandler } from "@/utils";
 import Button from "@/components/Button";
+import Spinner from "@/components/Spinner";
 
 const LeftCol = (props: LeftColProps) => {
   //States
   const [algorithm, setAlgorithm] = useState<string>("");
   const [solution, setSolution] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   //Hooks
   const { cube, solve } = useRubikCubeService();
@@ -30,10 +32,12 @@ const LeftCol = (props: LeftColProps) => {
 
   const getSolution = () => {
     if (cube.current) {
+      setIsLoading(true);
       const state = cube.current.getState();
       if (state) {
         setSolution(solve(state));
       }
+      setIsLoading(false);
     }
   };
 
@@ -48,6 +52,7 @@ const LeftCol = (props: LeftColProps) => {
         />
         <Button
           text={"Solve"}
+          disabled={!cube.current || !solution}
           onClick={() => {
             if (cube.current && solution) {
               cube.current.applyAlgorithm(solution);
@@ -56,13 +61,20 @@ const LeftCol = (props: LeftColProps) => {
           }}
         />
       </div>
-      <textarea
-        className="solution"
-        value={solution}
-        placeholder="The solution will be shown here"
-        readOnly
-        disabled
-      />
+      <div className="wrapper">
+        <textarea
+          className="solution"
+          value={solution}
+          placeholder="The solution will be shown here"
+          readOnly
+          disabled
+        />
+        {isLoading && (
+          <div className="loader">
+            <Spinner />
+          </div>
+        )}
+      </div>
       <div className="bottom-section">
         <label htmlFor="algorithm" className="label">
           Insert a scramble

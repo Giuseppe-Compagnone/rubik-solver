@@ -16,4 +16,9 @@
   &:hover {
     scale: 1.1;
   }
+
+  &.disabled {
+    pointer-events: none;
+    filter: brightness(0.7);
+  }
 }
