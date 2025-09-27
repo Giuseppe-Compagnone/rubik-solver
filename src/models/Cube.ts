@@ -305,8 +305,8 @@ export class Cube {
     };
 
     const faceColors: Record<string, string> = {
-      F: this.colors[0].toString(16).padStart(6, "0"),
-      B: this.colors[4].toString(16).padStart(6, "0"),
+      F: this.colors[4].toString(16).padStart(6, "0"),
+      B: this.colors[0].toString(16).padStart(6, "0"),
       R: this.colors[2].toString(16).padStart(6, "0"),
       L: this.colors[1].toString(16).padStart(6, "0"),
     };
