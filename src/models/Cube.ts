@@ -492,10 +492,10 @@ export class Cube {
                   index = k * 3 + i;
                   break;
                 case "F":
-                  index = j * 3 + i;
+                  index = j * 3 + (2 - i);
                   break;
                 case "B":
-                  index = (2 - j) * 3 + i;
+                  index = j * 3 + i;
                   break;
                 case "L":
                   index = j * 3 + (2 - k);
@@ -546,19 +546,7 @@ export class Cube {
       }
     });
 
-    console.table(stickers);
-    console.log(
-      (
-        stickers.U.join("") +
-        stickers.R.join("") +
-        stickers.F.join("") +
-        stickers.D.join("") +
-        stickers.L.join("") +
-        stickers.B.join("")
-      ).toUpperCase()
-    );
-
-    return (
+    const configuration = (
       stickers.U.join("") +
       stickers.R.join("") +
       stickers.F.join("") +
@@ -566,5 +554,11 @@ export class Cube {
       stickers.L.join("") +
       stickers.B.join("")
     ).toUpperCase();
+
+    console.table(stickers);
+
+    console.log(configuration);
+
+    return configuration;
   }
 }

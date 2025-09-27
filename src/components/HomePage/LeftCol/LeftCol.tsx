@@ -33,7 +33,8 @@ const LeftCol = (props: LeftColProps) => {
         text={"Solve"}
         onClick={() => {
           if (cube.current) {
-            console.log(solve(cube.current.getState()));
+            const state = cube.current.getState();
+            if (state) console.log(solve(state));
           }
         }}
       />

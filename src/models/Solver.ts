@@ -14,10 +14,10 @@ export class Solver {
     return this._instance;
   }
 
-  solve(_configuration: string): string {
-    const scramble = Cube.fromString(
-      "UUBUUBUUBRRRRRRRRRFFUFFUFFUDDFDDFDDFLLLLLLLLLDBBDBBDBB"
-    );
+  //R2 F' D2 F R2 D2 B' F2 D2 F2 D2 R' D2 B' U B R' D F2 R'
+  solve(configuration: string): string {
+    const scramble = Cube.fromString(configuration);
+
     const cube = new Cube();
 
     cube.init(scramble);
