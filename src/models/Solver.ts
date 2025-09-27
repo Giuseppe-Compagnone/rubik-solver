@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const Cube = require("cubejs");
 
 export class Solver {
@@ -13,7 +14,7 @@ export class Solver {
     return this._instance;
   }
 
-  solve(configuration: string): string {
+  solve(_configuration: string): string {
     const scramble = Cube.fromString(
       "UUBUUBUUBRRRRRRRRRFFUFFUFFUDDFDDFDDFLLLLLLLLLDBBDBBDBB"
     );
