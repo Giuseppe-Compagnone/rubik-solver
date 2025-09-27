@@ -65,9 +65,6 @@ export class Cube {
         })
     );
 
-    // FRUDLB
-    //F rosso,R Verde,U Giallo,D White,L Blu,B Arancio
-
     const faces: {
       axis: "x" | "y" | "z";
       index: number;
@@ -555,10 +552,41 @@ export class Cube {
       stickers.B.join("")
     ).toUpperCase();
 
-    console.table(stickers);
-
-    console.log(configuration);
-
     return configuration;
+  }
+
+  remove(): void {
+    for (let i = 0; i < this.order; i++) {
+      for (let j = 0; j < this.order; j++) {
+        for (let k = 0; k < this.order; k++) {
+          const piece = this.blocks[i][j][k].piece;
+          if (piece) {
+            // Rimuovi dalla scena
+            this.scene.remove(piece);
+
+            // Libera memoria delle geometrie e materiali
+            piece.traverse((child: any) => {
+              if (child.isMesh) {
+                if (child.geometry) {
+                  child.geometry.dispose();
+                }
+                if (child.material) {
+                  if (Array.isArray(child.material)) {
+                    child.material.forEach((mat: any) => mat.dispose());
+                  } else {
+                    child.material.dispose();
+                  }
+                }
+              }
+            });
+          }
+        }
+      }
+    }
+    this.blocks = Array.from({ length: this.order }, () =>
+      Array.from({ length: this.order }, () =>
+        Array.from({ length: this.order }, () => ({}))
+      )
+    );
   }
 }

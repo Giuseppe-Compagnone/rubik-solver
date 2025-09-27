@@ -60,6 +60,17 @@ const RubikCubeServiceProvider = (props: RubikCubeServiceProviderProps) => {
     return Solver.instance.solve(configuration);
   };
 
+  const reset = () => {
+    if (cube.current && !cube.current.rotating) {
+      const scene = cube.current?.scene;
+      if (scene) {
+        cube.current.remove();
+        const c = new Cube(scene);
+        cube.current = c;
+      }
+    }
+  };
+
   return (
     <RubikCubeServiceContext.Provider
       value={{
@@ -67,6 +78,7 @@ const RubikCubeServiceProvider = (props: RubikCubeServiceProviderProps) => {
         frontFace,
         setFrontFace,
         solve,
+        reset,
       }}
     >
       {props.children}

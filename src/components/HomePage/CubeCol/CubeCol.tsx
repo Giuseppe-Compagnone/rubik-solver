@@ -8,20 +8,35 @@ import Button from "@/components/Button";
 
 const CubeCol = (props: CubeColProps) => {
   //Hooks
-  const { cube, frontFace } = useRubikCubeService();
+  const { cube, frontFace, reset } = useRubikCubeService();
 
   return (
     <div className="cube-col">
-      <div className="color">
-        {new Array(9).fill(0).map((_, i) => {
-          return (
-            <div
-              key={i}
-              className="color-box"
-              style={{ background: `#${frontFace}` }}
-            />
-          );
-        })}
+      <div className="cube-header">
+        <div className="color">
+          {new Array(9).fill(0).map((_, i) => {
+            return (
+              <div
+                key={i}
+                className="color-box"
+                style={{ background: `#${frontFace}` }}
+              />
+            );
+          })}
+        </div>
+        <div
+          className="reset"
+          style={
+            !cube.current || cube.current.rotating
+              ? { pointerEvents: "none", opacity: 0.5 }
+              : {}
+          }
+          onClick={() => {
+            reset();
+          }}
+        >
+          RESET
+        </div>
       </div>
       <Canvas className="canvas">
         <ambientLight intensity={1.2} />

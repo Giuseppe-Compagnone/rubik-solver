@@ -10,6 +10,7 @@ import Button from "@/components/Button";
 const LeftCol = (props: LeftColProps) => {
   //States
   const [algorithm, setAlgorithm] = useState<string>("");
+  const [solution, setSolution] = useState<string>("");
 
   //Hooks
   const { cube, solve } = useRubikCubeService();
@@ -27,16 +28,40 @@ const LeftCol = (props: LeftColProps) => {
     setAlgorithm("");
   };
 
+  const getSolution = () => {
+    if (cube.current) {
+      const state = cube.current.getState();
+      if (state) {
+        setSolution(solve(state));
+      }
+    }
+  };
+
   return (
     <div className="left-col">
-      <Button
-        text={"Solve"}
-        onClick={() => {
-          if (cube.current) {
-            const state = cube.current.getState();
-            if (state) console.log(solve(state));
-          }
-        }}
+      <div className="buttons">
+        <Button
+          text={"Generate the solution"}
+          onClick={() => {
+            getSolution();
+          }}
+        />
+        <Button
+          text={"Solve"}
+          onClick={() => {
+            if (cube.current && solution) {
+              cube.current.applyAlgorithm(solution);
+              setSolution("");
+            }
+          }}
+        />
+      </div>
+      <textarea
+        className="solution"
+        value={solution}
+        placeholder="The solution will be shown here"
+        readOnly
+        disabled
       />
       <div className="bottom-section">
         <label htmlFor="algorithm" className="label">

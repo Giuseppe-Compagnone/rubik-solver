@@ -9,33 +9,51 @@
   max-width: 80vh;
   position: relative;
 
-  .color {
-    width: 3.6rem;
-    aspect-ratio: 1/1;
+  .cube-header {
     position: absolute;
-    left: 1rem;
-    top: 1rem;
+    left: 0;
+    top: 0;
+    padding: 1rem 2rem;
+    z-index: 99;
     display: flex;
-    flex-wrap: wrap;
-    z-index: 5;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
     font-size: 0.8rem;
+    color: #fff;
 
-    .color-box {
-      width: 1.2rem;
+    .color {
+      width: 3.6rem;
       aspect-ratio: 1/1;
-      border-radius: 0.2rem;
-      border: 2px solid black;
-      transition: all 0.2s ease-in-out;
+      display: flex;
+      flex-wrap: wrap;
+      position: relative;
+
+      .color-box {
+        width: 1.2rem;
+        aspect-ratio: 1/1;
+        border-radius: 0.2rem;
+        border: 2px solid black;
+        transition: all 0.2s ease-in-out;
+      }
+
+      &::after {
+        content: "FRONT";
+        position: absolute;
+        display: block;
+        top: 110%;
+        left: 50%;
+        transform: translateX(-50%);
+      }
     }
 
-    &::after {
-      content: "FRONT";
-      position: absolute;
-      display: block;
-      top: 110%;
-      left: 50%;
-      transform: translateX(-50%);
-      color: #fff;
+    .reset {
+      transition: all 0.2s ease-in-out;
+      cursor: pointer;
+
+      &:hover {
+        scale: 1.2;
+      }
     }
   }
 
