@@ -14,7 +14,7 @@ export class Cube {
   constructor(scene: THREE.Scene) {
     this.order = 3;
     this.pieceSize = 1;
-    this.colors = [0x00ff00, 0xff0000, 0xff8c00, 0xffffff, 0x0000ff, 0xffff00];
+    this.colors = [0x00ff00, 0xff8c00, 0xff0000, 0xffff00, 0x0000ff, 0xffffff];
     this.scene = scene;
     this.front = "B";
 

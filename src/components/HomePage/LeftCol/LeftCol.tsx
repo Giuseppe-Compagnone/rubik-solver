@@ -30,14 +30,18 @@ const LeftCol = (props: LeftColProps) => {
     setAlgorithm("");
   };
 
-  const getSolution = () => {
-    if (cube.current) {
+  const getSolution = async () => {
+    if (cube.current && !cube.current.rotating) {
       setIsLoading(true);
-      const state = cube.current.getState();
-      if (state) {
-        setSolution(solve(state));
+      try {
+        const state = cube.current.getState();
+        const solution = await solve(state);
+        setSolution(solution);
+      } catch (err) {
+        console.error("worker error:", err);
+      } finally {
+        setIsLoading(false);
       }
-      setIsLoading(false);
     }
   };
 
@@ -45,6 +49,7 @@ const LeftCol = (props: LeftColProps) => {
     <div className="left-col">
       <div className="buttons">
         <Button
+          disabled={!cube.current}
           text={"Generate the solution"}
           onClick={() => {
             getSolution();
