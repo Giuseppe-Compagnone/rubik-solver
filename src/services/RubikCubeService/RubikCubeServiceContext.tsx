@@ -7,7 +7,6 @@ export interface RubikCubeServiceContent {
   cube: RefObject<Cube | null>;
   frontFace: string;
   setFrontFace: (color: string) => void;
-  solve: (configuration: string) => string;
   reset: () => void;
 }
 
@@ -15,6 +14,5 @@ export const RubikCubeServiceContext = createContext<RubikCubeServiceContent>({
   cube: { current: null },
   frontFace: "ff0000",
   setFrontFace: (_color: string) => {},
-  solve: (_configuration: string) => "",
   reset: () => {},
 });

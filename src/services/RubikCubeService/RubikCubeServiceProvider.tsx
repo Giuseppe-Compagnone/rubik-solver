@@ -1,6 +1,6 @@
 "use client";
 
-import { Cube, Solver } from "@/models";
+import { Cube } from "@/models";
 import { RubikCubeServiceProviderProps } from "./RubikCubeService.types";
 import { RubikCubeServiceContext } from "./RubikCubeServiceContext";
 import { useEffect, useRef, useState } from "react";
@@ -56,9 +56,6 @@ const RubikCubeServiceProvider = (props: RubikCubeServiceProviderProps) => {
   }, [frontFace]);
 
   //Methods
-  const solve = (configuration: string) => {
-    return Solver.instance.solve(configuration);
-  };
 
   const reset = () => {
     if (cube.current && !cube.current.rotating) {
@@ -77,7 +74,6 @@ const RubikCubeServiceProvider = (props: RubikCubeServiceProviderProps) => {
         cube,
         frontFace,
         setFrontFace,
-        solve,
         reset,
       }}
     >

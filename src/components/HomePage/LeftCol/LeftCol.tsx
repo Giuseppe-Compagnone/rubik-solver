@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LeftColProps } from "./LeftCol.types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
@@ -13,9 +13,25 @@ const LeftCol = (props: LeftColProps) => {
   const [algorithm, setAlgorithm] = useState<string>("");
   const [solution, setSolution] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [worker, setWorker] = useState<Worker | null>(null);
 
   //Hooks
-  const { cube, solve } = useRubikCubeService();
+  const { cube } = useRubikCubeService();
+
+  //Effects
+  useEffect(() => {
+    const workerIstance = new Worker(
+      new URL("./../../../utils/SolveWorker.ts", import.meta.url)
+    );
+
+    workerIstance.onmessage = (e) => {
+      const solution = e.data;
+      setSolution(solution);
+      setIsLoading(false);
+    };
+
+    setWorker(workerIstance);
+  }, []);
 
   //Methods
   const handleAlgorithm = () => {
@@ -31,15 +47,13 @@ const LeftCol = (props: LeftColProps) => {
   };
 
   const getSolution = async () => {
-    if (cube.current && !cube.current.rotating) {
+    if (cube.current && !cube.current.rotating && worker) {
       setIsLoading(true);
       try {
         const state = cube.current.getState();
-        const solution = await solve(state);
-        setSolution(solution);
+        worker.postMessage({ data: state });
       } catch (err) {
         console.error("worker error:", err);
-      } finally {
         setIsLoading(false);
       }
     }
