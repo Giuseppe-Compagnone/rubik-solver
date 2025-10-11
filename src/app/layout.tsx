@@ -13,7 +13,7 @@ export default function RootLayout({
         <link
           type="image/x-icon"
           rel="shortcut icon"
-          href="/images/meta/favicons/ff0000.png"
+          href="images/meta/favicons/ff0000.png"
         />
       </head>
       <body>

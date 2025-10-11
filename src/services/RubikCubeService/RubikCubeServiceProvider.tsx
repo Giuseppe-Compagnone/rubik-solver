@@ -43,7 +43,7 @@ const RubikCubeServiceProvider = (props: RubikCubeServiceProviderProps) => {
   }, []);
 
   useEffect(() => {
-    const faviconUrl = `/images/meta/favicons/${frontFace}.png`;
+    const faviconUrl = `images/meta/favicons/${frontFace}.png`;
     const link: HTMLLinkElement =
       document.querySelector("link[rel*='icon']") ||
       document.createElement("link");
